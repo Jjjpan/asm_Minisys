@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1532011709 source:d:\git\asm_minisys\minisys_asm\asm\main.cpp
+	<iostream>
+	<stdio.h>
+	<memory.h>
+	<cstring>
+	<fstream>
+	<iomanip>
+	<cstdlib>
+	<string>
+	<set>
+	<map>
+
