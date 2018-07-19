@@ -12,5 +12,6 @@ node:   ori $1,$2,$3
 
 
         ori $1,$2,$3
+        j node
 
 		

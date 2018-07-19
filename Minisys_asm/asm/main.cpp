@@ -13,6 +13,8 @@ using namespace std;
 
 set<string> S;
 map<string,int> name_line;
+string command;
+char line[40];
 
 int getReg(char* arg){
     int reg = 0;
@@ -59,7 +61,21 @@ void printBin(int num, int digi, ostream& os){
     delete bin;
 }
 
-
+void Function_switch(istream& is,ostream& os )
+{
+    if(command=="j")
+    {
+        is>>command;
+        map<string,int>::iterator iter=name_line.find(command);
+        if(iter==name_line.end())
+            cout<<"Jmp point not found!"<<endl;
+        else
+        {
+            printBin(6,2,os);
+            printBin(24,iter->second,os);
+        }
+    }
+}
 int main(void){
     // Check the input
     /*if (argc != 2){
@@ -69,9 +85,10 @@ int main(void){
 */
     S.insert("add");
     S.insert("ori");
+    S.insert("j");
     ifstream code("cputest-仿真程序.asm");
     //char  arg1[20], arg2[20], arg3[20];
-    string command;
+
     int line_no = 0;
     while(code>>command)
     {
@@ -82,11 +99,22 @@ int main(void){
             if(command.data()[command.length()-1]==':')
             {
                 command.assign(command.substr(0,command.length()-1));
-                cout<<command<<" "<<line_no<<endl;
+                //cout<<command<<" "<<line_no<<endl;
                 name_line.insert(pair<string,int>(command,line_no));
             }
             //cout<<line_no<<endl;
         }
+    }
+    code.close();
+    ifstream word("cputest-仿真程序.asm");
+    ofstream obj("prgmip32.coe");
+    while(word>>command)
+    {
+        if(S.count(command))//find a operate in 32 Minsys opSet
+        {
+            word.getline(line,20,'#');
+        }
+
     }
     return 0;
 }
