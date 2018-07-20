@@ -19,9 +19,11 @@ int getImme_I(char* arg)
 {
     int reg;
     char* p=arg;
-    while (*p!='\0'||*p!=',')p++;
-    while (*p!='\0'||*p!=',')p++;
+    while (*p!='\0'&&*p!=',')p++;
+    p++;
+    while (*p!='\0'&&*p!=',')p++;
     if(*p=='\0')return -1;
+    p++;
     while(*p==' ')p++;
     while(*p >= '0' && *p <= '9'){
         reg = 10 * reg + (*p - '0');
