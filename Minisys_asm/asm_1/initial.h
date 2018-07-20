@@ -35,7 +35,7 @@ void initial_command_format(void)
     command_format.insert(pair<string,int>("sll",3));
     command_format.insert(pair<string,int>("srl",3));
     command_format.insert(pair<string,int>("sra",3));
-    command_format.insert(pair<string,int>("jr",3));
+    command_format.insert(pair<string,int>("jr",5));
     command_format.insert(pair<string,int>("addi",1));
     command_format.insert(pair<string,int>("addiu",1));
     command_format.insert(pair<string,int>("andi",1));

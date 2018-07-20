@@ -127,15 +127,7 @@ int main(void){
 
     string command("in");
     char line[40];
-    command_format.insert(pair<string,int>("add",0));
-    command_format.insert(pair<string,int>("ori",1));
-    command_format.insert(pair<string,int>("j",2));
-    pair<int,int> test_pair(0,32);
-    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("add",test_pair));//false!
-    test_pair=make_pair(13,0);
-    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("ori",test_pair));//false!
-    test_pair=make_pair(2,0);
-    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("j",test_pair));//false!
+
 
     ifstream code("cputest.asm");
 
@@ -187,9 +179,9 @@ int main(void){
             int format=judge_format(command.data());
             if(format==0)//ordinary R-format
             {
-                rs=getReg(line,0);
-                rt=getReg(line,1);
-                rd=getReg(line,2);
+                rs=getReg(line,1);
+                rt=getReg(line,2);
+                rd=getReg(line,0);
                 if (rd == -1||rt==-1||rs==-1)
                 {
                     cout << "Syntax error at Line " << line_no << "." << endl;
@@ -208,8 +200,8 @@ int main(void){
             }
             else if(format==1)//ordinary I-format
             {
-                rs=getReg(line,0);
-                rt=getReg(line,1);
+                rs=getReg(line,1);
+                rt=getReg(line,0);
                 immediate=getImme_I(line);
                 if (rd == -1||rt==-1||immediate==-1)
                 {
@@ -246,6 +238,11 @@ int main(void){
                 printBin(immediate,26,obj);
 
                 obj<<endl;
+            }
+            else if(format==3)
+            {
+                string command_string=command;
+
             }
         }
 
