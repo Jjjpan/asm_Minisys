@@ -72,7 +72,20 @@ void initial_command_opcode_functionOpcode(void)
     command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("srlv",make_pair(0,6)));
     command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("srav",make_pair(0,7)));
     command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("jr",make_pair(0,8)));
-    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("jr",make_pair(0,8)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("addi",make_pair(8,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("addiu",make_pair(9,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("andi",make_pair(12,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("ori",make_pair(13,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("xori",make_pair(14,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("lui",make_pair(15,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("lw",make_pair(35,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("sw",make_pair(43,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("beq",make_pair(4,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("bne",make_pair(5,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("slti",make_pair(10,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("sltiu",make_pair(11,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("j",make_pair(2,0)));
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("jal",make_pair(3,0)));
     return;
 }
 
