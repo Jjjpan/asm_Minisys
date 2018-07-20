@@ -10,7 +10,8 @@
 #include<map>
 
 using namespace std;
-
+    map<string,int> command_format;
+    map<string,int> name_line;
 
 
 int getReg(char* arg){
@@ -26,7 +27,7 @@ int getReg(char* arg){
         p++;
     }
     while (*p == ' ') p++;               // Skip the space following the number
-    if (*p != '\0') return -1;           // Unexpected characters
+    if (*p != '\0'||*p!='$') return -1;           // Unexpected characters
     else return reg;
 }
 
@@ -58,14 +59,19 @@ void printBin(int num, int digi, ostream& os){
     delete bin;
 }
 
+int judge_format(const char* command)
+{
+    string command_string(command);
+    return command_format.find(command_string)->second;
+}
+
 int main(void){
-    set<string> S;
-    map<string,int> name_line;
+
     string command("in");
     char line[40];
-    S.insert("add");
-    S.insert("ori");
-    S.insert("j");
+    command_format.insert(pair<string,int>("add",0));
+    command_format.insert(pair<string,int>("ori",1));
+    command_format.insert(pair<string,int>("j",2));
     ifstream code("cputest.asm");
 
     int line_no = 0;
@@ -74,7 +80,7 @@ int main(void){
         if(command[0]=='.')continue;
         else
         {
-            if(S.count(command)) line_no++;
+            if(command_format.count(command)) line_no++;
             if(command.data()[command.length()-1]==':')
             {
                 command.assign(command.substr(0,command.length()-1));
@@ -84,6 +90,37 @@ int main(void){
             //cout<<line_no<<endl;
         }
     }
+    code.close();
+    const char empty_mem[9]="00000000";
+    const char title_mem[100]="memory_initialization_radix = 16;";
+    const char subtitle_mem[100]="memory_initialization_vector =";
+    const char empty_cmd[9]="00000000";
+    const char title_cmd[100]="memory_initialization_radix = 16;";
+    const char subtitle_cmd[100]="memory_initialization_vector =";
+    ofstream mem_write("dmem32.coe");
+    ofstream obj("prgmip32.coe");
+
+    mem_write<<title_mem<<endl<<subtitle_mem<<endl;
+    obj<<title_cmd<<endl<<subtitle_cmd<<endl;
+
+    ifstream word("cputest.asm");
+
+    while(word>>command)
+    {
+        if(command_format.count(command))
+        {
+            word.get(line,40,'\n');
+            for(int i=0;i<40&&line[i]!='\0';i++)
+                if(line[i]=='#')
+                {
+                    line[i]='\0';
+                    break;
+                }
+            int format=judge_format(command.data());
+        }
+
+    }
+
 
     return 0;
 }

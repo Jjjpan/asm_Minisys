@@ -24,7 +24,7 @@ int getReg(char* arg){
         p++;
     }
     while (*p == ' ') p++;               // Skip the space following the number
-    if (*p != '\0') return -1;           // Unexpected characters
+    if (*p != '\0'||*p!='$') return -1;           // Unexpected characters
     else return reg;
 }
 
