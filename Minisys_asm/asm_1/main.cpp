@@ -12,14 +12,25 @@
 using namespace std;
     map<string,int> command_format;
     map<string,int> name_line;
+    map<string,int> register_hash;
+    map<string,pair<int,int>> command_opcode_functionOpcode;
 
 
-int getReg(char* arg){
+int getReg(char* arg,int n){
     int reg = 0;
+    int m=0;
     char *p = arg;
     while (*p == ' ') p++;       // Skip the space at the beginning
-    if (*p == '$') p++;
-    else return -1;              // Unexpected charaters
+    while(m<=n&&*p!='\0')
+        {
+            if (*p == '$')
+            {
+                m++;
+            }
+            p++;
+        }
+    if(*p=='\0')
+        return -1;              // Unexpected charaters
 
     // Parse
     while(*p >= '0' && *p <= '9'){
@@ -27,7 +38,7 @@ int getReg(char* arg){
         p++;
     }
     while (*p == ' ') p++;               // Skip the space following the number
-    if (*p != '\0'||*p!='$') return -1;           // Unexpected characters
+    if (*p != '\0'&&*p!=',') return -1;           // Unexpected characters
     else return reg;
 }
 
@@ -72,6 +83,8 @@ int main(void){
     command_format.insert(pair<string,int>("add",0));
     command_format.insert(pair<string,int>("ori",1));
     command_format.insert(pair<string,int>("j",2));
+    pair<int,int> test_pair(1,2);
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("add",test_pair));//false!
     ifstream code("cputest.asm");
 
     int line_no = 0;
@@ -102,7 +115,8 @@ int main(void){
 
     mem_write<<title_mem<<endl<<subtitle_mem<<endl;
     obj<<title_cmd<<endl<<subtitle_cmd<<endl;
-
+    char arg1[20], arg2[20], arg3[20];
+    int rs,rt,rd,shamt,fun_op,op,immediate;
     ifstream word("cputest.asm");
 
     while(word>>command)
@@ -117,6 +131,35 @@ int main(void){
                     break;
                 }
             int format=judge_format(command.data());
+            if(format==0)//ordinary R-format
+            {
+                rs=getReg(line,0);
+                rt=getReg(line,1);
+                rd=getReg(line,2);
+                if (rd == -1||rt==-1||rs==-1)
+                {
+                    cout << "Syntax error at Line " << line_no << "." << endl;
+                    code.close();
+                    obj.close();
+                    exit(-1);
+                }
+                printBin(command_opcode_functionOpcode.find(command)->second.first,6,obj);
+                //cout<<command_opcode_functionOpcode.find(command)->second.first;
+                printBin(rs, 5, obj);
+                printBin(rt, 5, obj);
+                printBin(rd, 5, obj);
+                printBin(0,5,obj);
+                printBin(command_opcode_functionOpcode.find(command)->second.second,6,obj);
+            }
+            else if(format==1)//ordinary I-format
+            {
+                rs=getReg(line,0);
+                rt=getReg(line,1);
+            }
+            else if(format==2)//J-format
+            {
+
+            }
         }
 
     }
