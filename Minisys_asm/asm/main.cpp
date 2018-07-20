@@ -75,6 +75,7 @@ void Function_switch(istream& is,ostream& os )
             printBin(24,iter->second,os);
         }
     }
+    return;
 }
 int main(void){
     // Check the input
@@ -86,7 +87,7 @@ int main(void){
     S.insert("add");
     S.insert("ori");
     S.insert("j");
-    ifstream code("cputest-仿真程序.asm");
+    ifstream code("cputest.asm");
     //char  arg1[20], arg2[20], arg3[20];
 
     int line_no = 0;
@@ -106,13 +107,14 @@ int main(void){
         }
     }
     code.close();
-    ifstream word("cputest-仿真程序.asm");
+    ifstream word("cputest.asm");
     ofstream obj("prgmip32.coe");
     while(word>>command)
     {
         if(S.count(command))//find a operate in 32 Minsys opSet
         {
-            word.getline(line,20,'#');
+            //word.getline(line,20,'#');
+
         }
 
     }
