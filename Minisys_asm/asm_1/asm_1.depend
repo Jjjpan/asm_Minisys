@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1532066795 source:d:\git\asm_minisys\minisys_asm\asm\main.cpp
+1532067223 source:d:\git\asm_minisys\minisys_asm\asm_1\main.cpp
 	<iostream>
 	<stdio.h>
 	<memory.h>

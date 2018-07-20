@@ -8,14 +8,7 @@
 #include<fstream>
 #include<iomanip>
 #include<cstdlib>
-#include<string>
-#include<set>
-#include<map>
-
 using namespace std;
-
-set<char*> S;
-map<char*,int> name_line;
 
 // A function used to extract the register number from string "$xx"
 int getReg(char* arg){
@@ -162,25 +155,8 @@ int main(int argc, char** argv){
 
 
 
-    char command[50], arg1[20], arg2[20], arg3[20];
+    char command[20], arg1[20], arg2[20], arg3[20];
     int line_no = 0;
-    string str;
-
-
-    while (code>> command)
-    {
-        line_no++;
-        if(!S.count(command))
-        {
-
-        }
-        else
-        {
-
-        }
-    }
-
-
     while (code >> command){
         line_no++;                      // The current line
         //code >> command;
