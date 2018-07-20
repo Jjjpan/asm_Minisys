@@ -15,6 +15,48 @@ using namespace std;
     map<string,int> register_hash;
     map<string,pair<int,int>> command_opcode_functionOpcode;
 
+int getImme_I(char* arg)
+{
+    int reg;
+    char* p=arg;
+    while (*p!='\0'||*p!=',')p++;
+    while (*p!='\0'||*p!=',')p++;
+    if(*p=='\0')return -1;
+    while(*p==' ')p++;
+    while(*p >= '0' && *p <= '9'){
+        reg = 10 * reg + (*p - '0');
+        p++;
+    }
+    while (*p == ' ') p++;
+    if (*p != '\0') return -1;           // Unexpected characters
+    else return reg;
+
+}
+
+int getImme_J(char* arg)
+{
+    char* p=arg;
+
+    char* q=arg;
+    while(*p==' ')p++;
+    while(*p != '\0' && *p != ' '){
+        *q=*p;
+        p++;
+        q++;
+    }
+    *q='\0';
+
+    while (*p == ' ') p++;
+    if (*p != '\0')
+    {
+        return -1;
+    }          // Unexpected characters
+
+    else
+
+        return q-arg-2;
+
+}
 
 int getReg(char* arg,int n){
     int reg = 0;
@@ -45,8 +87,11 @@ int getReg(char* arg,int n){
 // Output a binary number with a given length to an object of ostream
 void printBin(int num, int digi, ostream& os){
     char *bin = (char*)malloc(digi*sizeof(char)+1);
-    memset(bin, '0', digi * sizeof(char));
+    //memset(bin, '0', digi * sizeof(char));
+    for(int i=0;i<digi;i++)
+        bin[i]='0';
     bin[digi]='\0';
+
     char *p = bin + (digi - 1);
     int sign = (num >= 0)? 1: -1;
     num = num * sign;
@@ -67,6 +112,7 @@ void printBin(int num, int digi, ostream& os){
         }
     }
     os << bin;
+
     delete bin;
 }
 
@@ -83,22 +129,28 @@ int main(void){
     command_format.insert(pair<string,int>("add",0));
     command_format.insert(pair<string,int>("ori",1));
     command_format.insert(pair<string,int>("j",2));
-    pair<int,int> test_pair(1,2);
+    pair<int,int> test_pair(0,32);
     command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("add",test_pair));//false!
+    test_pair=make_pair(13,0);
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("ori",test_pair));//false!
+    test_pair=make_pair(2,0);
+    command_opcode_functionOpcode.insert(pair<string,pair<int,int> >("j",test_pair));//false!
+
     ifstream code("cputest.asm");
 
     int line_no = 0;
     while(code>>command)
     {
-        if(command[0]=='.')continue;
+        string temp_command=command;
+        if(temp_command[0]=='.')continue;
         else
         {
-            if(command_format.count(command)) line_no++;
-            if(command.data()[command.length()-1]==':')
+            if(command_format.count(temp_command)) line_no++;
+            if(temp_command.data()[temp_command.length()-1]==':')
             {
-                command.assign(command.substr(0,command.length()-1));
-                cout<<command<<" "<<line_no<<endl;
-                name_line.insert(pair<string,int>(command,line_no));
+                temp_command.assign(temp_command.substr(0,temp_command.length()-1));
+                cout<<temp_command<<" "<<line_no<<endl;
+                name_line.insert(pair<string,int>(temp_command,line_no));
             }
             //cout<<line_no<<endl;
         }
@@ -123,6 +175,7 @@ int main(void){
     {
         if(command_format.count(command))
         {
+            memset(line,0,sizeof(line));
             word.get(line,40,'\n');
             for(int i=0;i<40&&line[i]!='\0';i++)
                 if(line[i]=='#')
@@ -139,7 +192,7 @@ int main(void){
                 if (rd == -1||rt==-1||rs==-1)
                 {
                     cout << "Syntax error at Line " << line_no << "." << endl;
-                    code.close();
+                    word.close();
                     obj.close();
                     exit(-1);
                 }
@@ -150,20 +203,54 @@ int main(void){
                 printBin(rd, 5, obj);
                 printBin(0,5,obj);
                 printBin(command_opcode_functionOpcode.find(command)->second.second,6,obj);
+                obj<<endl;
             }
             else if(format==1)//ordinary I-format
             {
                 rs=getReg(line,0);
                 rt=getReg(line,1);
+                immediate=getImme_I(line);
+                if (rd == -1||rt==-1||immediate==-1)
+                {
+                    cout << "Syntax error at Line " << line_no << "." << endl;
+                    word.close();
+                    obj.close();
+                    exit(-1);
+                }
+                printBin(command_opcode_functionOpcode.find(command)->second.first,6,obj);
+                printBin(rs, 5, obj);
+                printBin(rt, 5, obj);
+                printBin(immediate, 16, obj);
+                obj<<endl;
             }
             else if(format==2)//J-format
             {
+                string command_string=command;
+                immediate=getImme_J(line);
+                line[immediate]='\0';
 
+                if (immediate==-1)
+                {
+                    cout << "Syntax error at Line " << line_no << "." << endl;
+                    word.close();
+                    obj.close();
+                    exit(-1);
+                }
+                string immediate_string(line);
+
+
+                immediate=name_line.find(immediate_string)->second;
+                printBin(command_opcode_functionOpcode.find(command_string)->second.first,6,obj);
+
+                printBin(immediate,26,obj);
+
+                obj<<endl;
             }
         }
 
     }
-
+    word.close();
+    obj.close();
 
     return 0;
 }

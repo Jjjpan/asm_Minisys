@@ -1,3 +1,5 @@
-add $1,$2,$3
-add $1,$2,$3
-		
+a:	add $1,$2,$3
+sdfb:	add $1,$2,$3
+
+
+jump:	j sdfb		
