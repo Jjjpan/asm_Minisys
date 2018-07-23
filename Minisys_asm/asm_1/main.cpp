@@ -11,8 +11,21 @@
 #include"initial.h"
 
 using namespace std;
+map<string,int> name_line;
+int getImme_LUI(char *arg)
+{
+    int reg;
+    char* p=arg;
+    while(*p==' ')p++;
+    while(*p >= '0' && *p <= '9'){
+        reg = 10 * reg + (*p - '0');
+        p++;
+    }
+    while (*p == ' ') p++;
+    if (*p != '\0') return -1;           // Unexpected characters
+    else return reg;
 
-
+}
 
 int getImme_I(char* arg)
 {
@@ -127,7 +140,8 @@ int main(void){
 
     string command("in");
     char line[40];
-
+    initial_command_format();
+    initial_command_opcode_functionOpcode();
 
     ifstream code("cputest.asm");
 
@@ -163,6 +177,7 @@ int main(void){
     char arg1[20], arg2[20], arg3[20];
     int rs,rt,rd,shamt,fun_op,op,immediate;
     ifstream word("cputest.asm");
+
 
     while(word>>command)
     {
@@ -242,7 +257,53 @@ int main(void){
             else if(format==3)
             {
                 string command_string=command;
-
+                rt=getReg(line,1);
+                rd=getReg(line,0);
+                shamt=getImme_I(line);
+                if (shamt==-1)
+                {
+                    cout << "Syntax error at Line " << line_no << "." << endl;
+                    word.close();
+                    obj.close();
+                    exit(-1);
+                }
+                printBin(command_opcode_functionOpcode.find(command_string)->second.first,6,obj);
+                printBin(0,5,obj);
+                printBin(rt,5,obj);
+                printBin(rd,5,obj);
+                printBin(command_opcode_functionOpcode.find(command_string)->second.second,6,obj);
+            }
+            else if(format==4)//lui
+            {
+                string command_string=command;
+                rt=getReg(line,0);
+                immediate=getImme_LUI(line);
+                if (immediate==-1)
+                {
+                    cout << "Syntax error at Line " << line_no << "." << endl;
+                    word.close();
+                    obj.close();
+                    exit(-1);
+                }
+                printBin(15,6,obj);
+                printBin(0,5,obj);
+                printBin(rt,5,obj);
+                printBin(immediate,16,obj);
+            }
+            else if(format==5)//jr
+            {
+                string command_string=command;
+                rs=getReg(line,0);
+                if(rs==-1)
+                {
+                    cout << "Syntax error at Line " << line_no << "." << endl;
+                    word.close();
+                    obj.close();
+                    exit(-1);
+                }
+                printBin(0,6,obj);
+                printBin(rs,5,obj);
+                printBin(0,21,obj);
             }
         }
 

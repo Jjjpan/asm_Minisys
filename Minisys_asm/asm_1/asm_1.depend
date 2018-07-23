@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1532083566 source:d:\git\asm_minisys\minisys_asm\asm_1\main.cpp
+1532317826 source:d:\git\asm_minisys\minisys_asm\asm_1\main.cpp
 	<iostream>
 	<stdio.h>
 	<memory.h>
@@ -12,7 +12,7 @@
 	<map>
 	"initial.h"
 
-1532085581 d:\git\asm_minisys\minisys_asm\asm_1\initial.h
+1532317829 d:\git\asm_minisys\minisys_asm\asm_1\initial.h
 	<iostream>
 	<stdio.h>
 	<memory.h>

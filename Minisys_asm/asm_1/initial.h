@@ -13,7 +13,7 @@
 
 using namespace std;
     map<string,int> command_format;
-    map<string,int> name_line;
+
     map<string,int> register_hash;
     map<string,pair<int,int>> command_opcode_functionOpcode;
 
