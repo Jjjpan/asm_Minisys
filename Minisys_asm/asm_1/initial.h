@@ -13,7 +13,7 @@
 
 using namespace std;
     map<string,int> command_format;
-
+    map<string,int> reg_name_num;
     map<string,int> register_hash;
     map<string,pair<int,int>> command_opcode_functionOpcode;
 
@@ -41,8 +41,8 @@ void initial_command_format(void)
     command_format.insert(pair<string,int>("andi",1));
     command_format.insert(pair<string,int>("ori",1));
     command_format.insert(pair<string,int>("xori",1));
-    command_format.insert(pair<string,int>("lw",1));
-    command_format.insert(pair<string,int>("sw",1));
+    command_format.insert(pair<string,int>("lw",6));
+    command_format.insert(pair<string,int>("sw",6));
     command_format.insert(pair<string,int>("beq",1));
     command_format.insert(pair<string,int>("bne",1));
     command_format.insert(pair<string,int>("slti",1));
@@ -89,4 +89,42 @@ void initial_command_opcode_functionOpcode(void)
     return;
 }
 
+void initial_reg_name_num(void)
+{
+    reg_name_num.insert(pair<string,int>("zero",0));
+    reg_name_num.insert(pair<string,int>("at",1));
+    reg_name_num.insert(pair<string,int>("v0",2));
+    reg_name_num.insert(pair<string,int>("v1",3));
+    reg_name_num.insert(pair<string,int>("a0",4));
+    reg_name_num.insert(pair<string,int>("a1",5));
+    reg_name_num.insert(pair<string,int>("a2",6));
+    reg_name_num.insert(pair<string,int>("a3",7));
+    reg_name_num.insert(pair<string,int>("t0",8));
+    reg_name_num.insert(pair<string,int>("t1",9));
+    reg_name_num.insert(pair<string,int>("t2",10));
+    reg_name_num.insert(pair<string,int>("t3",11));
+    reg_name_num.insert(pair<string,int>("t4",12));
+    reg_name_num.insert(pair<string,int>("t5",13));
+    reg_name_num.insert(pair<string,int>("t6",14));
+    reg_name_num.insert(pair<string,int>("t7",15));
+    reg_name_num.insert(pair<string,int>("s0",16));
+    reg_name_num.insert(pair<string,int>("s1",17));
+    reg_name_num.insert(pair<string,int>("s2",18));
+    reg_name_num.insert(pair<string,int>("s3",19));
+    reg_name_num.insert(pair<string,int>("s4",20));
+    reg_name_num.insert(pair<string,int>("s5",21));
+    reg_name_num.insert(pair<string,int>("s6",22));
+    reg_name_num.insert(pair<string,int>("s7",23));
+    reg_name_num.insert(pair<string,int>("t8",24));
+    reg_name_num.insert(pair<string,int>("t9",25));
+    reg_name_num.insert(pair<string,int>("i0",26));
+    reg_name_num.insert(pair<string,int>("i1",27));
+    reg_name_num.insert(pair<string,int>("gp",28));
+    reg_name_num.insert(pair<string,int>("sp",29));
+    reg_name_num.insert(pair<string,int>("s8",30));
+    reg_name_num.insert(pair<string,int>("fp",30));
+    reg_name_num.insert(pair<string,int>("ra",31));
+
+    return;
+}
 #endif // INITIAL_H_INCLUDED

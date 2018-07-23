@@ -12,6 +12,7 @@
 
 using namespace std;
 map<string,int> name_line;
+
 int getImme_LUI(char *arg)
 {
     int reg;
@@ -73,7 +74,7 @@ int getImme_J(char* arg)
 }
 
 int getReg(char* arg,int n){
-    int reg = 0;
+    char reg[50];
     int m=0;
     char *p = arg;
     while (*p == ' ') p++;       // Skip the space at the beginning
@@ -85,17 +86,24 @@ int getReg(char* arg,int n){
             }
             p++;
         }
+    while(*p==' ')p++;
     if(*p=='\0')
         return -1;              // Unexpected charaters
-
+    int reg_iter=0;
     // Parse
-    while(*p >= '0' && *p <= '9'){
-        reg = 10 * reg + (*p - '0');
+    while(*p != '\0' && *p != ','&&*p!=' '){
+        reg[reg_iter]=*p;
+        reg_iter++;
         p++;
     }
+    reg[reg_iter]='\0';
+    string reg_name(reg);
     while (*p == ' ') p++;               // Skip the space following the number
+    cout<<reg_name<<endl;
+    cout<<reg_name_num.count(reg_name)<<endl;
     if (*p != '\0'&&*p!=',') return -1;           // Unexpected characters
-    else return reg;
+
+    else return reg_name_num.find(reg_name)->second;
 }
 
 // Output a binary number with a given length to an object of ostream
@@ -142,8 +150,9 @@ int main(void){
     char line[40];
     initial_command_format();
     initial_command_opcode_functionOpcode();
+    initial_reg_name_num();
 
-    ifstream code("cputest.asm");
+    ifstream code("cputest1.asm");
 
     int line_no = 0;
     while(code>>command)
@@ -164,10 +173,10 @@ int main(void){
     }
     code.close();
     const char empty_mem[9]="00000000";
-    const char title_mem[100]="memory_initialization_radix = 16;";
+    const char title_mem[100]="memory_initialization_radix = 2;";
     const char subtitle_mem[100]="memory_initialization_vector =";
     const char empty_cmd[9]="00000000";
-    const char title_cmd[100]="memory_initialization_radix = 16;";
+    const char title_cmd[100]="memory_initialization_radix = 2;";
     const char subtitle_cmd[100]="memory_initialization_vector =";
     ofstream mem_write("dmem32.coe");
     ofstream obj("prgmip32.coe");
@@ -176,7 +185,7 @@ int main(void){
     obj<<title_cmd<<endl<<subtitle_cmd<<endl;
     char arg1[20], arg2[20], arg3[20];
     int rs,rt,rd,shamt,fun_op,op,immediate;
-    ifstream word("cputest.asm");
+    ifstream word("cputest1.asm");
 
 
     while(word>>command)
@@ -304,6 +313,27 @@ int main(void){
                 printBin(0,6,obj);
                 printBin(rs,5,obj);
                 printBin(0,21,obj);
+            }
+            else if(format==6)//lw sw
+            {
+                string command_string=command;
+                int offset=0;
+                rt=getReg(line,0);
+                for(int i=0;line[i]!='\0';i++)
+                    if(line[i]=='('||line[i]==')')
+                        line[i]=' ';
+                rs=getReg(line,1);
+                if(rs==-1)
+                {
+                    cout << "Syntax error at Line " << line_no << "." << endl;
+                    word.close();
+                    obj.close();
+                    exit(-1);
+                }
+                printBin(command_opcode_functionOpcode.find(command_string)->second.first,6,obj);
+                printBin(rs,5,obj);
+                printBin(rt,5,obj);
+                printBin(offset,16,obj);
             }
         }
 
