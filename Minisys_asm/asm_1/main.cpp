@@ -15,16 +15,21 @@ map<string,int> name_line;
 
 int getImme_LUI(char *arg)
 {
-    int reg;
+    int reg=0;
     char* p=arg;
+    while(*p!=',')p++;
+    p++;
     while(*p==' ')p++;
     if(*p=='0')
     {
         p++;
+        if(*p=='\0')return 0;
         if(*p=='x')
         {
-            string arg_string(arg);
+            p++;
+            string arg_string(p);
             reg=strtoll(arg_string.c_str(), NULL, 16);
+            return reg;
         }
         else
         cout<<"Input integer error."<<endl;
@@ -59,7 +64,7 @@ int getOffset(char *arg)
 
 int getImme_I(char* arg)
 {
-    int reg;
+    int reg=0;
     int hex_bit;
     char* p=arg;
     while (*p!='\0'&&*p!=',')p++;
@@ -71,10 +76,13 @@ int getImme_I(char* arg)
     if(*p=='0')
     {
         p++;
+        if(*p=='\0')return 0;
         if(*p=='x')
         {
-            string arg_string(arg);
+            p++;
+            string arg_string(p);
             reg=strtoll(arg_string.c_str(), NULL, 16);
+            return reg;
         }
         else
         cout<<"Input integer error."<<endl;
@@ -112,7 +120,7 @@ int getImme_J(char* arg)
 
     else
 
-        return q-arg-2;
+        return q-arg;
 
 }
 
@@ -260,8 +268,8 @@ int main(void){
         else continue;
     }
 
-
-
+    ofstream hex_prg("hex.coe");
+    hex_prg<<title_mem<<endl<<subtitle_mem<<endl;
 
 
 
@@ -327,6 +335,7 @@ int main(void){
                 printBin(rd, 5, obj);
                 printBin(0,5,obj);
                 printBin(command_opcode_functionOpcode.find(command)->second.second,6,obj);
+
                 obj<<endl;
             }
             else if(format==1)//ordinary I-format
@@ -387,6 +396,7 @@ int main(void){
                 printBin(0,5,obj);
                 printBin(rt,5,obj);
                 printBin(rd,5,obj);
+                printBin(shamt,5,obj);
                 printBin(command_opcode_functionOpcode.find(command_string)->second.second,6,obj);
                 obj<<endl;
             }
@@ -422,6 +432,7 @@ int main(void){
                 printBin(0,6,obj);
                 printBin(rs,5,obj);
                 printBin(0,21,obj);
+                obj<<endl;
             }
             else if(format==6)//lw sw
             {
@@ -451,6 +462,23 @@ int main(void){
     }
     word.close();
     obj.close();
-
+    mem_write.close();
+    ifstream bin_read("prgmip32.coe");
+    char bin_line[40];
+    for(int i=0;i<5;i++)
+        bin_read>>bin_line;
+    while(bin_read>>bin_line)
+    {
+        int val;
+        char val_char;
+        for(int i=0;i<32;i=i+4)
+        {
+           val=(bin_line[i]-'0')*8+(bin_line[i+1]-'0')*4+(bin_line[i+2]-'0')*2+bin_line[i+3]-'0';
+           val_char=(val>9)?'A'+val-10:'0'+val;
+           hex_prg<<val_char;
+        }
+        hex_prg<<endl;
+    }
+    hex_prg.close();
     return 0;
 }

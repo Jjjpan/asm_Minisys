@@ -1,7 +1,7 @@
 .data  0x0000              		        # 数据定义的首地址
    buf:   .word  0x00000055, 0x000000AA	# 定义数据
 .text 0x0000						        # 代码段定义开始
-start:ori $at,$zero,1       #寄存器初始化
+start: ori $at,$zero,1       #寄存器初始化
 		ori $v0,$zero,2
 		ori $v1,$zero,3
 		ori $a0,$zero,4
@@ -62,5 +62,5 @@ next:	addi $v0,$zero,0x99
 		addi $v0,$zero,0
 		addi $v1,$zero,2
 		sub  $at,$v0,$v1
-		j	 start
+		j	start
 
