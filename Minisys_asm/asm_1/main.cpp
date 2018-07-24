@@ -210,7 +210,7 @@ int main(void){
     {
         char start_addr[20];
 
-        if(command.data()==".data"||command.data()==".DATA")
+        if(command==".data"||command==".DATA")
         {
             data.getline(line,40,'#');
             int line_iter=0;
@@ -232,7 +232,7 @@ int main(void){
             return -1;
         }
     }
-    for(int i=0;i<=data_offset;i++)
+    for(int i=0;i<data_offset;i++)
         mem_write<<empty_mem<<endl;
     while(data>>command)
     {
@@ -255,8 +255,9 @@ int main(void){
             name_high_low.insert(pair<string,pair<int,int> >(command_string,make_pair(data_high,data_low)));
 
         }
-        else
+        else if(command_string.data()[0]=='.')
             break;
+        else continue;
     }
 
 
