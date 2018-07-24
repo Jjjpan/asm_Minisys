@@ -32,10 +32,10 @@ start:ori $at,$zero,1       #¼Ä´æÆ÷³õÊ¼»¯
 		ori $sp,$zero,29
 		ori $s8,$zero,30
 		ori $ra,$zero,31
-		lw $v0,buf($zero)        #ori $v0,$zero,0x55 
+		lw $v0,55($zero)        #ori $v0,$zero,0x55 
 		ori $a0,$zero,4
 		ori $a1,$zero,5
-		lw $v1,buf($a0)			# buf+4
+		lw $v1,55($a0)			# buf+4
 		add $at,$v0,$v1
 		sw $at,8($zero)
 		subu $a0,$v1,$v0

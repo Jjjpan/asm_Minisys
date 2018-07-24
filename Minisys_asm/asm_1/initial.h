@@ -15,8 +15,8 @@ using namespace std;
     map<string,int> command_format;
     map<string,int> reg_name_num;
     map<string,int> register_hash;
-    map<string,pair<int,int>> command_opcode_functionOpcode;
-
+    map<string,pair<int,int> > command_opcode_functionOpcode;
+    map<string,pair<int,int> > name_high_low;
 void initial_command_format(void)
 {
     command_format.insert(pair<string,int>("add",0));
@@ -43,8 +43,8 @@ void initial_command_format(void)
     command_format.insert(pair<string,int>("xori",1));
     command_format.insert(pair<string,int>("lw",6));
     command_format.insert(pair<string,int>("sw",6));
-    command_format.insert(pair<string,int>("beq",1));
-    command_format.insert(pair<string,int>("bne",1));
+    command_format.insert(pair<string,int>("beq",6));
+    command_format.insert(pair<string,int>("bne",6));
     command_format.insert(pair<string,int>("slti",1));
     command_format.insert(pair<string,int>("sltiu",1));
     command_format.insert(pair<string,int>("lui",4));
@@ -120,10 +120,13 @@ void initial_reg_name_num(void)
     reg_name_num.insert(pair<string,int>("i0",26));
     reg_name_num.insert(pair<string,int>("i1",27));
     reg_name_num.insert(pair<string,int>("gp",28));
+    reg_name_num.insert(pair<string,int>("s9",28));
     reg_name_num.insert(pair<string,int>("sp",29));
     reg_name_num.insert(pair<string,int>("s8",30));
     reg_name_num.insert(pair<string,int>("fp",30));
     reg_name_num.insert(pair<string,int>("ra",31));
+    for(int i=0;i<32;i++)
+        reg_name_num.insert(pair<string,int>(to_string(i),i));
 
     return;
 }
