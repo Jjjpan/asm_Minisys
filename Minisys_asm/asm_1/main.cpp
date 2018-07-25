@@ -9,7 +9,8 @@
 #include<set>
 #include<map>
 #include"initial.h"
-
+#define HEX_EMPTY 32767
+#define MEM_EMPTY 32766
 using namespace std;
 map<string,int> name_line;
 
@@ -197,14 +198,14 @@ int judge_format(const char* command)
 
 int main(void){
 
-    string command("in");
+    string command("");
     char line[40];
     initial_command_format();
     initial_command_opcode_functionOpcode();
     initial_reg_name_num();
-    ifstream data("cputest1.asm");
+
     int data_offset;
-    const char empty_mem[9]="00000000";
+    const char empty_mem[11]="0x00000000";
     const char title_mem[100]="memory_initialization_radix = 16;";
     const char subtitle_mem[100]="memory_initialization_vector =";
     const char empty_cmd[9]="00000000";
@@ -214,6 +215,7 @@ int main(void){
     ofstream obj("prgmip32.coe");
     mem_write<<title_mem<<endl<<subtitle_mem<<endl;
     obj<<title_cmd<<endl<<subtitle_cmd<<endl;
+    ifstream data("cputest1.asm");
     while(data>>command)
     {
         char start_addr[20];
@@ -242,12 +244,14 @@ int main(void){
     }
     for(int i=0;i<data_offset;i++)
         mem_write<<empty_mem<<endl;
+        int data_line_num=0;
     while(data>>command)
     {
         string command_string=command;
         string data_type("word");
         string data_temp("0");
         int data_low,data_high;
+
         if(command_string.data()[command_string.length()-1]==':')
         {
             command_string.assign(command_string.substr(0,command_string.length()-1));
@@ -258,16 +262,23 @@ int main(void){
             data_low=strtoll(data_num.c_str(),NULL,16);
             data>>data_temp;
             data_num=data_temp;
-            mem_write<<data_num<<endl;
+            mem_write<<data_num<<','<<endl;
             data_high=strtoll(data_num.c_str(),NULL,16);
             name_high_low.insert(pair<string,pair<int,int> >(command_string,make_pair(data_high,data_low)));
-
+            data_line_num++;
         }
+
+
         else if(command_string.data()[0]=='.')
             break;
         else continue;
     }
-
+    while(data_line_num<MEM_EMPTY)
+        {
+            mem_write<<empty_mem<<','<<endl;
+            data_line_num++;
+        }
+        mem_write<<empty_mem<<';'<<endl;
     ofstream hex_prg("hex.coe");
     hex_prg<<title_mem<<endl<<subtitle_mem<<endl;
 
@@ -305,6 +316,7 @@ int main(void){
 
     while(word>>command)
     {
+
         if(command_format.count(command))
         {
             memset(line,0,sizeof(line));
@@ -465,6 +477,7 @@ int main(void){
     mem_write.close();
     ifstream bin_read("prgmip32.coe");
     char bin_line[40];
+    int hex_inter=0;
     for(int i=0;i<5;i++)
         bin_read>>bin_line;
     while(bin_read>>bin_line)
@@ -477,8 +490,12 @@ int main(void){
            val_char=(val>9)?'A'+val-10:'0'+val;
            hex_prg<<val_char;
         }
-        hex_prg<<endl;
+        hex_inter++;
+        hex_prg<<','<<endl;
     }
+    for(;hex_inter<HEX_EMPTY;hex_inter++)
+        hex_prg<<empty_cmd<<','<<endl;
+    hex_prg<<empty_cmd<<';'<<endl;
     hex_prg.close();
     return 0;
 }
