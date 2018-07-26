@@ -12,11 +12,11 @@
 #include<map>
 
 using namespace std;
-    map<string,int> command_format;
-    map<string,int> reg_name_num;
+    map<string,int> command_format;//指令与指令类型
+    map<string,int> reg_name_num;//寄存器命名与编号
     map<string,int> register_hash;
-    map<string,pair<int,int> > command_opcode_functionOpcode;
-    map<string,pair<int,int> > name_high_low;
+    map<string,pair<int,int> > command_opcode_functionOpcode;//指令与操作码和FUNCTIONOP
+    map<string,pair<int,int> > name_high_low;//数据高低位和名称
 void initial_command_format(void)
 {
     command_format.insert(pair<string,int>("add",0));

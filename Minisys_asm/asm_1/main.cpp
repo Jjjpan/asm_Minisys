@@ -11,6 +11,7 @@
 #include"initial.h"
 #define HEX_EMPTY 32767
 #define MEM_EMPTY 32766
+#define INPUTNAME "cputest1.asm"
 using namespace std;
 map<string,int> name_line;
 
@@ -215,12 +216,12 @@ int main(void){
     ofstream obj("prgmip32.coe");
     mem_write<<title_mem<<endl<<subtitle_mem<<endl;
     obj<<title_cmd<<endl<<subtitle_cmd<<endl;
-    ifstream data("cputest1.asm");
+    ifstream data(INPUTNAME);
     while(data>>command)
     {
         char start_addr[20];
 
-        if(command==".data"||command==".DATA")
+        if(command==".data"||command==".DATA")//确认数据段位置
         {
             data.getline(line,40,'#');
             int line_iter=0;
@@ -233,7 +234,7 @@ int main(void){
             }
             start_addr[sa_iter]='\0';
             string start_addr_string(start_addr);
-            data_offset=strtoll(start_addr_string.c_str(), NULL, 16);
+            data_offset=strtoll(start_addr_string.c_str(), NULL, 16);//16进制确定偏移量
             break;
         }
         else if(command.data()[0]=='.')
@@ -242,7 +243,7 @@ int main(void){
             return -1;
         }
     }
-    for(int i=0;i<data_offset;i++)
+    for(int i=0;i<data_offset;i++)//偏移量之前清空
         mem_write<<empty_mem<<endl;
         int data_line_num=0;
     while(data>>command)
@@ -254,26 +255,24 @@ int main(void){
 
         if(command_string.data()[command_string.length()-1]==':')
         {
-            command_string.assign(command_string.substr(0,command_string.length()-1));
+            command_string.assign(command_string.substr(0,command_string.length()-1));//去除冒号
             data>>data_type;
             data>>data_temp;
             string data_num=data_temp;
-            mem_write<<data_num<<endl;
-            data_low=strtoll(data_num.c_str(),NULL,16);
+            mem_write<<data_num<<endl;//写入文件
+            data_low=strtoll(data_num.c_str(),NULL,16);//读数据
             data>>data_temp;
             data_num=data_temp;
             mem_write<<data_num<<','<<endl;
             data_high=strtoll(data_num.c_str(),NULL,16);
-            name_high_low.insert(pair<string,pair<int,int> >(command_string,make_pair(data_high,data_low)));
+            name_high_low.insert(pair<string,pair<int,int> >(command_string,make_pair(data_high,data_low)));//构造映射
             data_line_num++;
         }
-
-
-        else if(command_string.data()[0]=='.')
+        else if(command_string.data()[0]=='.')//下一段
             break;
         else continue;
     }
-    while(data_line_num<MEM_EMPTY)
+    while(data_line_num<MEM_EMPTY)//补0
         {
             mem_write<<empty_mem<<','<<endl;
             data_line_num++;
@@ -286,23 +285,21 @@ int main(void){
 
 
 
-    ifstream code("cputest1.asm");
-
+    ifstream code(INPUTNAME);
     int line_no = 0;
     while(code>>command)
     {
         string temp_command=command;
-        if(temp_command[0]=='.')continue;
+        if(temp_command[0]=='.')continue;//新段跳过
         else
         {
-            if(command_format.count(temp_command)) line_no++;
+            if(command_format.count(temp_command)) line_no++;//确定行号
             if(temp_command.data()[temp_command.length()-1]==':')
             {
-                temp_command.assign(temp_command.substr(0,temp_command.length()-1));
+                temp_command.assign(temp_command.substr(0,temp_command.length()-1));//去除冒号
                 cout<<temp_command<<" "<<line_no<<endl;
-                name_line.insert(pair<string,int>(temp_command,line_no));
+                name_line.insert(pair<string,int>(temp_command,line_no));//插入映射对
             }
-            //cout<<line_no<<endl;
         }
     }
     code.close();
@@ -311,7 +308,7 @@ int main(void){
 
     char arg1[20], arg2[20], arg3[20];
     int rs,rt,rd,shamt,fun_op,op,immediate;
-    ifstream word("cputest1.asm");
+    ifstream word(INPUTNAME);
 
 
     while(word>>command)
@@ -332,7 +329,7 @@ int main(void){
             {
                 rs=getReg(line,1);
                 rt=getReg(line,2);
-                rd=getReg(line,0);
+                rd=getReg(line,0);//找寻寄存器
                 if (rd == -1||rt==-1||rs==-1)
                 {
                     cout << "Syntax error at Line " << line_no << "." << endl;
@@ -340,14 +337,13 @@ int main(void){
                     obj.close();
                     exit(-1);
                 }
+                //找寻opcode和function opcode
                 printBin(command_opcode_functionOpcode.find(command)->second.first,6,obj);
-                //cout<<command_opcode_functionOpcode.find(command)->second.first;
                 printBin(rs, 5, obj);
                 printBin(rt, 5, obj);
                 printBin(rd, 5, obj);
                 printBin(0,5,obj);
                 printBin(command_opcode_functionOpcode.find(command)->second.second,6,obj);
-
                 obj<<endl;
             }
             else if(format==1)//ordinary I-format
@@ -475,16 +471,16 @@ int main(void){
     word.close();
     obj.close();
     mem_write.close();
-    ifstream bin_read("prgmip32.coe");
+    ifstream bin_read("prgmip32.coe");//读取二进制文件
     char bin_line[40];
     int hex_inter=0;
-    for(int i=0;i<5;i++)
+    for(int i=0;i<5;i++)//跳过说明行
         bin_read>>bin_line;
     while(bin_read>>bin_line)
     {
         int val;
         char val_char;
-        for(int i=0;i<32;i=i+4)
+        for(int i=0;i<32;i=i+4)//二进制转十六进制
         {
            val=(bin_line[i]-'0')*8+(bin_line[i+1]-'0')*4+(bin_line[i+2]-'0')*2+bin_line[i+3]-'0';
            val_char=(val>9)?'A'+val-10:'0'+val;
@@ -493,7 +489,7 @@ int main(void){
         hex_inter++;
         hex_prg<<','<<endl;
     }
-    for(;hex_inter<HEX_EMPTY;hex_inter++)
+    for(;hex_inter<HEX_EMPTY;hex_inter++)//空补全
         hex_prg<<empty_cmd<<','<<endl;
     hex_prg<<empty_cmd<<';'<<endl;
     hex_prg.close();

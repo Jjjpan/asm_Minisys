@@ -7,7 +7,7 @@ start: ori $at,$zero,1       #¼Ä´æÆ÷³õÊ¼»¯
 		ori $a0,$zero,4
 		ori $a1,$zero,5
 		ori $a2,$zero,6
-		ori $a3,$zero,7
+		ori $a3,$zer7,o
 		ori $t0,$zero,8
 		ori $t1,$zero,9
 		ori $t2,$zero,10
